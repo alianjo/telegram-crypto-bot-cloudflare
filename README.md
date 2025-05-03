@@ -81,3 +81,27 @@ A lightweight and fast Telegram bot to fetch real-time cryptocurrency prices wit
 
 ---
 
+## ✅ Running Tests
+
+To make sure everything is working correctly, this project includes three types of tests:
+
+- **Unit Tests** – test individual functions (`test_unit.py`)
+- **Functional Tests** – test interactions like command handling (`test_functional.py`)
+- **Integration Tests** – test the end-to-end bot behavior (`test_integration.py`)
+
+### How to Run the Tests
+
+First, make sure you have `pytest` and `pytest-asyncio` installed:
+
+```bash
+pip install pytest pytest-asyncio
+Then simply run:
+
+pytest tests/
+If everything is set up correctly, you should see output like:
+
+tests/test_functional.py .    [ 33%]
+tests/test_integration.py .   [ 66%]
+tests/test_unit.py .          [100%]
+
+3 passed in 1.27s
