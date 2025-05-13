@@ -1,5 +1,4 @@
 python-telegram-bot==20.0
 pycoingecko==3.0.0
-pytest-asyncio
-sys
-os
+pytest-asyncio==0.18.3
+pytest==7.4.0

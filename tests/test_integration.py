@@ -1,29 +1,45 @@
 import sys
 import os
 import pytest
-from telegram.ext import ContextTypes
-from telegram import Update
+from unittest.mock import AsyncMock, MagicMock
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from robot import button_handler
 
-class DummyCallbackQuery:
-    def __init__(self, data):
+class DummyQuery:
+    def __init__(self, data, chat_id=1234):
         self.data = data
-        self.message = type('obj', (object,), {'chat_id': 123})
-    async def answer(self, text=None):
-        return text
+        self.message = MagicMock()
+        self.message.chat_id = chat_id
+        self.answer = AsyncMock()
 
 class DummyUpdate:
     def __init__(self, data):
-        self.callback_query = DummyCallbackQuery(data)
+        self.callback_query = DummyQuery(data)
 
-class DummyBot:
-    async def send_message(self, chat_id, text):
-        return text
+class DummyContext:
+    def __init__(self):
+        self.bot = MagicMock()
+        self.bot.send_message = AsyncMock()
 
 @pytest.mark.asyncio
-async def test_button_handler_integration():
+async def test_button_handler_bitcoin():
     update = DummyUpdate("bitcoin")
-    context = type('obj', (object,), {'bot': DummyBot()})
+    context = DummyContext()
+
     await button_handler(update, context)
+
+    context.bot.send_message.assert_called_once()
+    args, kwargs = context.bot.send_message.call_args
+    assert "💲 قیمت بیت‌کوین" in kwargs['text']
+
+@pytest.mark.asyncio
+async def test_button_handler_all_prices():
+    update = DummyUpdate("all")
+    context = DummyContext()
+
+    await button_handler(update, context)
+
+    context.bot.send_message.assert_called_once()
+    args, kwargs = context.bot.send_message.call_args
+    assert "💸 قیمت لحظه‌ای" in kwargs['text']
